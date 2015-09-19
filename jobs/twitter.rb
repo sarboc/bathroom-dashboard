@@ -1,13 +1,17 @@
+require 'json'
 require 'twitter'
+require 'pry'
 
+json = File.read('config.json')
+secret_config = JSON.parse(json)['twitter']
 
 #### Get your twitter keys & secrets:
 #### https://dev.twitter.com/docs/auth/tokens-devtwittercom
 twitter = Twitter::REST::Client.new do |config|
-  config.consumer_key = 'YOUR_CONSUMER_KEY'
-  config.consumer_secret = 'YOUR_CONSUMER_SECRET'
-  config.access_token = 'YOUR_OAUTH_TOKEN'
-  config.access_token_secret = 'YOUR_OAUTH_SECRET'
+  config.consumer_key = secret_config['consumer_key']
+  config.consumer_secret = secret_config['consumer_secret']
+  config.access_token = secret_config['access_token']
+  config.access_token_secret = secret_config['access_token_secret']
 end
 
 search_term = URI::encode('#todayilearned')
