@@ -1,5 +1,4 @@
 require 'nokogiri'
-require 'net/https'
 require 'open-uri'
 require 'json'
 require 'pry'
