@@ -8,4 +8,8 @@ $background-color:  #B2B2B2;
 // ----------------------------------------------------------------------------
 .widget-traffic {
   background-color: $background-color;
+
+  h1, h2 {
+    display: inline;
+  }
 }
