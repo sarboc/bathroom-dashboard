@@ -20,7 +20,7 @@ SCHEDULER.every '1m', :first_in => 0 do
 
   while image_url.nil?
     if gallery_images.empty?
-      image_url = "i.imgur.com/0mAflZ7.jpg"
+      image_url = "//i.imgur.com/0mAflZ7.jpg"
     else
       image = gallery_images.shift
     end

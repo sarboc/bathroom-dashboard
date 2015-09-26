@@ -64,7 +64,7 @@ SCHEDULER.every '15m', :first_in => 4 do |job|
 
     data[name] = result.data
   end
-  
+
   send_event('sara_personal_calendar', { events: data[:sara_personal] })
   send_event('sara_work_calendar', { events: data[:sara_work] })
 end
