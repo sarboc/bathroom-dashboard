@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'dashing'
+gem 'google-api-client'
 gem 'icalendar'
 gem 'nokogiri'
 gem 'pry'
