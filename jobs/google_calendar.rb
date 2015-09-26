@@ -17,6 +17,9 @@ service_account_email = secret_config['service_account_email'] # Email of servic
 key_file = secret_config['key_file'] # File containing your private key
 key_secret = secret_config['key_secret'] # Password to unlock private key
 sara_personal_calendar_id = secret_config['sara_personal_calendar_id'] # Calendar ID.
+sara_work_calendar_id = secret_config['sara_work_calendar_id'] # Calendar ID.
+
+calendars = { sara_personal: sara_personal_calendar_id, sara_work: sara_work_calendar_id }
 
 ENV['SSL_CERT_FILE'] = 'lib/ca-bundle.crt'
 
@@ -45,13 +48,23 @@ SCHEDULER.every '15m', :first_in => 4 do |job|
   # Start and end dates
   now = DateTime.now
 
-  base_options = {'timeMin' => now.rfc3339, 'orderBy' => 'startTime', 'singleEvents' => 'true', 'maxResults' => 3}
+  data = {}
 
-  result = client.execute(
-    api_method: service.events.list,
-    parameters: base_options.merge({'calendarId' => sara_personal_calendar_id})
-  )
+  calendars.each do |name, calendar_id|
+    result = client.execute(
+      api_method: service.events.list,
+      parameters: {
+        'calendarId' => calendar_id,
+        'timeMin' => now.rfc3339,
+        'orderBy' => 'startTime',
+        'singleEvents' => 'true',
+        'maxResults' => 3
+      }
+    )
 
-  send_event('sara_personal_calendar', { events: result.data })
-
+    data[name] = result.data
+  end
+  
+  send_event('sara_personal_calendar', { events: data[:sara_personal] })
+  send_event('sara_work_calendar', { events: data[:sara_work] })
 end
