@@ -1,6 +1,7 @@
 # From https://gist.github.com/toddq/5422352
 require 'net/https'
 require 'json'
+require 'pry'
 
 json = File.read('config.json')
 secret_config = JSON.parse(json)['forecast']
@@ -24,10 +25,22 @@ SCHEDULER.every '5m', :first_in => 0 do |job|
   http.verify_mode = OpenSSL::SSL::VERIFY_PEER
   response = http.request(Net::HTTP::Get.new("/forecast/#{forecast_api_key}/#{forecast_location_lat},#{forecast_location_long}?units=#{forecast_units}"))
   forecast = JSON.parse(response.body)
-  forecast_current_temp = forecast["currently"]["temperature"].round
+
   forecast_current_icon = forecast["currently"]["icon"]
-  forecast_current_desc = forecast["currently"]["summary"]
-  forecast_later_desc   = forecast["hourly"]["summary"]
-  forecast_later_icon   = forecast["hourly"]["icon"]
-  send_event('forecast', { current_temp: "#{forecast_current_temp}&deg;", current_icon: "#{forecast_current_icon}", current_desc: "#{forecast_current_desc}", later_icon: "#{forecast_later_icon}", later_desc: "#{forecast_later_desc}"})
+  forecast_current_temp = forecast["currently"]["temperature"].round
+  forecast_later_desc   = forecast["daily"]["data"][0]["summary"]
+  forecast_later_high   = forecast["daily"]["data"][0]["temperatureMax"].round
+  forecast_later_low    = forecast["daily"]["data"][0]["temperatureMin"].round
+  forecast_later_icon   = forecast["daily"]["icon"]
+
+  data = {
+    later_icon: "#{forecast_later_icon}",
+    later_desc: "#{forecast_later_desc}",
+    later_temp: "#{forecast_later_high}&deg;",
+    later_low: "Today's low will be #{forecast_later_low}.",
+    current_icon: "#{forecast_current_icon}",
+    current_temp: "#{forecast_current_temp}&deg;"
+  }
+
+  send_event('forecast', data)
 end
