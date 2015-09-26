@@ -11,7 +11,8 @@ class Dashing.SaraPersonalCalendar extends Dashing.Widget
     start = moment(event.start.dateTime)
     end = moment(event.end.dateTime)
 
-    @set('event',event)
+    summary = event.summary
+    @set('event_summary', summary)
     @set('event_date', start.format('dddd Do MMMM'))
     @set('event_times', start.format('HH:mm') + " - " + end.format('HH:mm'))
 
