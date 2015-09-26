@@ -23,3 +23,6 @@ Dashing.on 'ready', ->
       draggable:
         stop: Dashing.showGridsterInstructions
         start: -> Dashing.currentWidgetPositions = Dashing.getWidgetPositions()
+
+  Batman.Filters.dateFormat = (date) ->
+    moment(date).format('MMMM Do, h:mma')
